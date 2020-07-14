@@ -1,0 +1,30 @@
+version: '3.7'
+services:
+    php-fpm:
+        container_name: strekalin-php-fpm
+        build: ./docker/php
+        ports:
+            - "9000"
+        volumes:
+            - ./:/var/www/jobs
+        depends_on: 
+            - db
+        networks:
+            - strekalin-int
+        restart: always
+            
+    nginx:
+        container_name: strekalin-nginx
+        build: ./docker/nginx
+        ports:
+            - "8080:80"
+        depends_on: 
+            - php-fpm
+        networks:
+            - strekalin-int
+        volumes:
+            - ./:/var/www/jobs
+        restart: always
+        
+networks:
+    strekalin-int:

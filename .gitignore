@@ -1,0 +1,5 @@
+app/config/local.neon
+/vendor/
+.buildpath
+.settings
+.project

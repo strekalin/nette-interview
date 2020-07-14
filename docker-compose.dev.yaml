@@ -1,0 +1,24 @@
+version: '3.7'
+services:
+    db:
+        container_name: strekalin-db
+        image: mariadb:10.5.4
+        environment:
+            - MYSQL_DATABASE=jobs
+            - MYSQL_USER=jobs
+            - MYSQL_PASSWORD=jobs
+            - MYSQL_ROOT_PASSWORD=jobs
+        ports:
+            - "3366:3306"
+        volumes:
+#            - db-data:/var/lib/mysql/data
+            - ./docker/db/data:/var/lib/mysql
+        networks:
+            - strekalin-int
+        restart: always
+    php-fpm:
+        command: ["/opt/jobs/dev.sh"]
+#volumes:
+#    db-data:
+#        external: true
+#        name: strekalin-jobs-data
