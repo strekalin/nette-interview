@@ -1,5 +1,7 @@
 parameters:
-
+	database:
+		driver: "pdo_mysql"
+		url: "mysql://jobs:jobs@db:3306/jobs?serverVersion=mariadb-10.5.4"
 
 application:
 	errorPresenter: Error
@@ -9,14 +11,63 @@ application:
 
 session:
 	expiration: 14 days
+	
+latte:
+    macros:
+        - App\Macros\MarkdownMacros
+        - App\Macros\DatetimeMacros
+        
+extensions:
+	console: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
+	
+	nettrine.annotations: Nettrine\Annotations\DI\AnnotationsExtension
+	nettrine.cache: Nettrine\Cache\DI\CacheExtension
+	nettrine.dbal: Nettrine\DBAL\DI\DbalExtension
+	nettrine.dbal.console: Nettrine\DBAL\DI\DbalConsoleExtension
+	nettrine.migrations: Nettrine\Migrations\DI\MigrationsExtension
+	nettrine.orm: Nettrine\ORM\DI\OrmExtension
+	nettrine.orm.cache: Nettrine\ORM\DI\OrmCacheExtension
+	nettrine.orm.console: Nettrine\ORM\DI\OrmConsoleExtension(%consoleMode%)
+	nettrine.orm.annotations: Nettrine\ORM\DI\OrmAnnotationsExtension
 
+nettrine.dbal:
+	debug:
+		panel: %debugMode%
+		sourcePaths: [%appDir%]
+	connection:
+		driver: %database.driver%
+		url: %database.url%
+		charset: UTF8
 
-di:
-	export:
-		parameters: no
-		tags: no
-		types:
+nettrine.migrations:
+	directory: %appDir%/../migrations
 
+nettrine.orm:
+	configuration:
+		autoGenerateProxyClasses: %debugMode%
+
+nettrine.orm.annotations:
+	mapping:
+		App\Model\Entity: '%appDir%/Model/Entity'
+
+console:
+    lazy: true
 
 services:
 	router: App\Router\RouterFactory::createRouter
+	console.application:
+		class: Symfony\Component\Console\Application
+		setup:
+			- setName('CLI')
+			- setVersion('1.0')
+	- App\Model\Repository\JobRepository
+	- App\Model\Repository\LocationRepository
+	- App\Model\Repository\CompanyRepository
+	- App\Command\JobParseCommand
+	
+	job.parser.strategy.jobscz: App\Model\Service\JobParseStrategy\JobParseStrategyJobscz
+	job.parser:
+		class: App\Model\Service\JobParseService
+		arguments:
+			-
+				- @job.parser.strategy.jobscz

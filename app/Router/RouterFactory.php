@@ -17,13 +17,9 @@ final class RouterFactory
 	public static function createRouter(): RouteList
 	{
 	    $router = new RouteList;
-	    
-	    $router[] = new CliRouter(array(
-	        'action' => 'Cli:Prize:Minute',
-	    ));
-	    
+
 	    $router[] = $frontRouter = new RouteList('Front');
-	    $frontRouter[] = new Route('/<presenter>/<action>', 'Homepage:default');
+	    $frontRouter[] = new Route('/<presenter>/<action>[/<id \d+>]', 'Homepage:default');
 	    
 	    return $router;
 	}
