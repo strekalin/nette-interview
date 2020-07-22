@@ -1,0 +1,21 @@
+{block content}
+<div id="banner">
+	<h1 n:block=title>Detail</h1>
+</div>
+
+<div class="panel panel-info">
+	<div class="panel-body">
+		<h4>{$job->getTitle()} <span class="pull-right">{datetime $job->getUpdated()}</span></h4>
+	</div>
+	<div class="panel-footer">
+		<dl>
+			<dt>Company:</dt>
+			<dd>{$job->getCompany()->getName()}</dd>
+			
+			<dt>Address:</dt>
+			<dd>{$job->getLocation()->getAddress()}</dd>
+		</dl>
+		<hr>
+		{markdown $job->getDescription()->getAd()}
+	</div>
+</div>

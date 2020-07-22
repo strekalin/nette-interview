@@ -7,11 +7,9 @@ while ! nc -z db 3306; do
     sleep 0.1
 done
 
-php-fpm7 -F
-exit $?
 
 echo "Execute migrations"
-/var/www/jobs/bin/console doctrine:migrations:migrate
+/var/www/jobs/bin/console migrations:migrate --no-interaction
 if [ $? -eq 0 ]
 then
     echo "Migrations finished"
@@ -21,7 +19,7 @@ else
 fi
 
 echo "Execute import"
-/var/www/jobs/bin/console app:news-parse
+/var/www/jobs/bin/console app:job:parse
 if [ $? -eq 0 ]
 then
     echo "Import Finished"
