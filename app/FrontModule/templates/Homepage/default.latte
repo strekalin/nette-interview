@@ -1,0 +1,13 @@
+{block content}
+<div id="banner">
+	<h1 n:block=title>Jobs list</h1>
+</div>
+<div class="list-group">
+	{foreach $jobs as $job}
+  		<a href="{link detail id => $job->getId()}" class="list-group-item">
+    		<h4 class="list-group-item-heading">{$job->getTitle()} <span class="pull-right">{datetime $job->getUpdated()}</span></h4>
+    		<p class="list-group-item-text">{$job->getCompany()->getName()}</p>
+    		<p class="list-group-item-text">{$job->getLocation()->getAddress()}</p>
+  		</a>
+	{/foreach}
+</div>
